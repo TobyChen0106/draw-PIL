@@ -20,9 +20,11 @@ text_draw = ImageDraw.Draw(text_base_img)
 text_draw.text((0, 125), "EE.CROSSING.TEAM 2020", fill="black", font=font)
 
 font2 = ImageFont.truetype("Anton-Regular.ttf", 100)
+font3 = ImageFont.truetype("Anton-Regular.ttf", 80)
+offset = 0
 for i in range(16):
     for j in range(5):
-        code = Image.open(f'codes/{i*5+j}.png', 'r')
+        code = Image.open(f'codes/{i*5+j+offset}.png', 'r')
         code = code.resize(code_size)
         code = code.rotate(90, expand=True)
 
@@ -30,15 +32,25 @@ for i in range(16):
 
         text_num_img = Image.new('RGBA', (120, 120), "black")
         text_draw = ImageDraw.Draw(text_num_img)
-        w, h = text_draw.textsize(f"{i*5+j}", font=font2)
-        x = (120-w)
-        if x < 0:
-            x = 0
-        text_draw.text(((120-w)/2, (120-h)/2-5), f"{i*5+j}",   font=font2)
+        if(len(str(f"{i*5+j+offset}")) > 2):
+            w, h = text_draw.textsize(f"{i*5+j+offset}", font=font3)
+            x = (120-w)
+            if x < 0:
+                x = 0
+            text_draw.text(((120-w)/2, (120-h)/2-5),
+                           f"{i*5+j+offset}",   font=font3)
+        else:
+            w, h = text_draw.textsize(f"{i*5+j+offset}", font=font2)
+            x = (120-w)
+            if x < 0:
+                x = 0
+            text_draw.text(((120-w)/2, (120-h)/2-5),
+                           f"{i*5+j+offset}",   font=font2)
+
         text_num_img = text_num_img.rotate(90, expand=True)
         text_base_img.paste(text_num_img, (55, 0))
 
         image.paste(text_base_img, (100+25+385*j+130, 120+25+170*i))
 # , font=ImageFont.truetype("font_path123"))
 
-image.save('test.png')
+image.save(f'test-{offset}.png')
